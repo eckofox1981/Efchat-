@@ -5,13 +5,18 @@ import efprog.server.ChatServer;
 import java.io.*;
 import java.net.Socket;
 
-public class ClientThread extends ChatServer implements Runnable {
+public class ClientManager extends ChatServer implements Runnable {
+    /**
+     * each object opf ClientManager will be responsible for communicating with a client.
+     * ClientManageris also responsible for communication with  a client.
+     * Runnable since we need it to run on separate thread for each client (otherwise it could only do one at a time)
+     */
     private Socket socket;
     private BufferedReader msgIn;
     private PrintWriter msgOut;
     private ChatServer chatServer;
 
-    public ClientThread(Socket socket) {
+    public ClientManager(Socket socket) {
         this.socket = socket;
     }
 
@@ -24,7 +29,7 @@ public class ClientThread extends ChatServer implements Runnable {
             while (!socket.isClosed()){
                 String input = msgIn.readLine();
                 if (input != null){
-                    for (ClientThread client : chatServer.clientThreadList) {
+                    for (ClientManager client : chatServer.clientThreadList) {
                         client.getWriter().write(input);
                     }
                 }

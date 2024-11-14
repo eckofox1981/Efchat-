@@ -27,7 +27,7 @@ public class Client {
         try {
             serverThread1 = new ServerThread(new Socket("localhost", 4444), userNameForClientConstructor);
         } catch (IOException e) {
-            System.err.println("construction serverthread1: " + e.getMessage());
+            System.err.println("construction serverThread1: " + e.getMessage());
             e.printStackTrace();
         }
         Client client = new Client(userNameForClientConstructor);

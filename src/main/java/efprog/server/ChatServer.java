@@ -1,6 +1,6 @@
 package efprog.server;
 
-import efprog.client.ClientThread;
+import efprog.client.ClientManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatServer {
-    public static List<ClientThread> clientThreadList = new ArrayList<>();
+    public static List<ClientManager> clientThreadList = new ArrayList<>();
 
     public static void main (String[] args) {
         int portNumber = 4444;
@@ -28,7 +28,7 @@ public class ChatServer {
         while (true){
             try{
                 Socket socket = serverSocket.accept();
-                ClientThread client = new ClientThread(socket);
+                ClientManager client = new ClientManager(socket);
                 Thread thread = new Thread(client);
                 thread.start();
                 clientThreadList.add(client);
