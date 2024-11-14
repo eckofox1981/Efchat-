@@ -47,10 +47,14 @@ public class Server {
 
     public static void main (String[] args) {
         try {
-            ServerSocket serverSocket = new ServerSocket(4444);
+            ServerSocket serverSocket = new ServerSocket(4444); //4444 ramdomly picked, lower numbers may already be used by system
+            Server chatServer = new Server(serverSocket);       /** the new server will listen on that socket*/
+            chatServer.start();
+
 
         } catch (IOException e) {
             System.err.println("serSocket in ServerMain err" + e.getMessage() + "\n serSock in main prinstack");
+            e.printStackTrace();
         }
 
     }
