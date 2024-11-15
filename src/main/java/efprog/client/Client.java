@@ -39,11 +39,28 @@ public class Client {
             }
 
         } catch (IOException e) {
-            System.err.println("Error @ sendMsgOut(): msgOut.write/newLine/flsuh " + e.getMessage() + " printstack:");
+            System.err.println("Error @ sendMsgOut(): msgOut.write/newLine/flush " + e.getMessage() + " printstack:");
             e.printStackTrace();
         }
     }
 
-    public void l
+    public void listenForMsgIn() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String msgReceived;
+
+                while (!socket.isClosed()) {
+                    try {
+                        msgReceived = msgIn.readLine();
+                        System.out.println(msgReceived);
+                    } catch (IOException e) {
+                        System.err.println("msgIn @ listenForMsgIn/run " + e.getMessage() + " printstack");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start(); /** a new thread is started to listen for messages in parallel to the other threads in the ClientManager*/
+    }
 
 }
