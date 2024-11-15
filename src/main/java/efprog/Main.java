@@ -14,14 +14,18 @@ public class Main {
 
         System.out.println("Enter your username:");
         String userName = scanner.nextLine();
+        Socket socket;
+        Client client;
         try {
-            Socket socket = new Socket("localhost", 4444);
+            socket = new Socket("localhost", 4444);
+            client = new Client(socket, userName);
+            client.listenForMsgIn();    //separate thead on whileloop
+            client.sendMsgOut();
         } catch (IOException e){
             System.err.println("Didn't even get past main...tttt" + e.getMessage() + "stacktrace");
             e.printStackTrace();
         }
-        Client client = new Client(socket, userName);
-        client.listenForMsgIn();    //separate thead on whileloop
-        client.sendMsgOut();        //separate thead on whileloop
+
+               //separate thead on whileloop
     }
 }

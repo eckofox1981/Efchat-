@@ -48,12 +48,11 @@ public class ClientManager implements Runnable {
          *              its task: receiving a message and all operations would come to a halt.
          *              This is called a blocking operation (another example in Server start() method*/
         try {
-            msgOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            msgIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             while (!socket.isClosed()) {
                 String incomingMsg = msgIn.readLine();  //this would be the blocking code if not run on a separate thread,
                                                         //it would wait until it'd have something to read
+                broadCastMsg(incomingMsg);
             }
         } catch (IOException e) {
             System.err.println("msgOut/msgIN error" + e.getMessage());
@@ -64,8 +63,8 @@ public class ClientManager implements Runnable {
         for (ClientManager client : clients) {
             try {
                 if (!client.userName.equals(userName)) {
-                    String msgBroadcasted = message + "\n";
-                    client.msgOut.write(msgBroadcasted);
+                    client.msgOut.write(message);
+                    client.msgOut.newLine();
                     client.msgOut.flush();
                 }
             } catch (IOException e) {

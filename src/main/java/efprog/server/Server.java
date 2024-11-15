@@ -53,7 +53,7 @@ public class Server {
 
 
         } catch (IOException e) {
-            System.err.println("serSocket in ServerMain err" + e.getMessage() + "\n serSock in main prinstack");
+            System.err.println("serSocket in ServerMain err" + e.getMessage() + " serSock in main prinstack");
             e.printStackTrace();
         }
 
