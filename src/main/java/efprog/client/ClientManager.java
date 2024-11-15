@@ -7,9 +7,10 @@ import java.util.List;
 
 public class ClientManager implements Runnable {
     /**
-     * each object opf ClientManager will be responsible for communicating with a client.
-     * ClientManageris also responsible for communication with  a client.
-     * Runnable since we need it to run on separate thread for each client (otherwise it could only do one at a time)
+     * each object of ClientManager will be responsible for communicating with a client.
+     * ClientManager is also responsible for communication with  a client.
+     * Runnable since we need it to run on separate threads for each client (otherwise it could only do one at a time)
+     *
      */
     public static List<ClientManager> clients = new ArrayList<>(); //lists all clients to the group chat
 
