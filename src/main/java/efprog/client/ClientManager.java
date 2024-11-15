@@ -34,16 +34,17 @@ public class ClientManager implements Runnable {
             this.msgIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); //this stream to read (on this socket)
             this.userName = msgIn.readLine(); //using the reader which will read from the client
             clients.add(this); //added to group chat
-            System.out.println("\u001B[42m" + "SERVER: " + userName + " has entered the chat!"); //first code is coloring the text-background green
+            broadCastMsg("\u001B[42m" + "SERVER: " + userName + " has entered the chat!" + "\033[0;34m"); //first code is coloring the text green, last to get it white
         } catch (IOException e) {
             System.err.println("msgOut/In err at constructor: " + e.getMessage() + "\n msgOut/In err prinstack:");
             e.printStackTrace();
+            closingEverything(socket, msgIn, msgOut);
         }
     }
 
     @Override
     public void run() { //overriden since implemented by runnable
-        /**this method will be run on a separate thread since it will listen for new message on the server
+        /**this method will be run on a separate thread since it will listen for new messages on the server
          *          => if not run on a separate thread, the program would wait to continue until it finished
          *              its task: receiving a message and all operations would come to a halt.
          *              This is called a blocking operation (another example in Server start() method*/
@@ -80,7 +81,7 @@ public class ClientManager implements Runnable {
         System.out.println("\u001B[42m" + "SERVER: " + userName + " has left the chat.");
     }
 
-    public void closingEverything(Socket socket, BufferedReader bufferedReader, PrintWriter printWriter){
+    public void closingEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
         removeClientManager();
         if (bufferedReader != null){
             try {
