@@ -34,7 +34,7 @@ public class ClientManager implements Runnable {
             this.msgIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); //this stream to read (on this socket)
             this.userName = msgIn.readLine(); //using the reader which will read from the client
             clients.add(this); //added to group chat
-            broadCastMsg("\u001B[42m" + "SERVER: " + userName + " has entered the chat!" + "\033[0;34m"); //first code is coloring the text green, last to get it white
+            broadCastMsg("\033[0;34m"  + "\u001B[42m" + "SERVER: " + userName + " has entered the chat!" + "\033[0;34m" ); //first code is coloring the text green, last to get it white
         } catch (IOException e) {
             System.err.println("msgOut/In err at constructor: " + e.getMessage() + "\n msgOut/In err prinstack:");
             e.printStackTrace();
@@ -57,6 +57,7 @@ public class ClientManager implements Runnable {
             }
         } catch (IOException e) {
             System.err.println("msgOut/msgIN error" + e.getMessage());
+            closingEverything(socket, msgIn, msgOut);
         }
     }
 
@@ -69,8 +70,8 @@ public class ClientManager implements Runnable {
                     client.msgOut.flush();
                 }
             } catch (IOException e) {
-                System.err.println("Error at msgOut.write/flush @ broadcastMsg " + e.getMessage() + " printstack:");
-                e.printStackTrace();
+                System.err.println("Client disconnected or Error at msgOut.write/flush @ broadcastMsg " + e.getMessage());
+                closingEverything(socket, msgIn, msgOut);
             }
         }
     }
@@ -78,7 +79,7 @@ public class ClientManager implements Runnable {
     public void removeClientManager(){
         /** will remove the client from the clientManager list and print it on the display*/
         clients.remove(this);
-        System.out.println("\u001B[42m" + "SERVER: " + userName + " has left the chat.");
+        System.out.println("\u001B[42m" + "SERVER: " + userName + " has left the chat. + \033[0;34m");
     }
 
     public void closingEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
@@ -92,8 +93,13 @@ public class ClientManager implements Runnable {
             }
         }
 
-        if (printWriter != null){
-            printWriter.close();
+        if (bufferedWriter != null){
+            try {
+                bufferedWriter.close();
+            } catch (IOException e) {
+                System.err.println("Could not close msgOut @ closes everything " + e.getMessage() + " printstack:");
+                e.printStackTrace();
+            }
         }
 
         if (socket != null){

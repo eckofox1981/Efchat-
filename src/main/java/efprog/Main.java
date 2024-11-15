@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter your username:");
+        System.out.println("Enter your username:" + "\033[0;34m");
         String userName = scanner.nextLine();
         Socket socket;
         Client client;
