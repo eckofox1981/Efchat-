@@ -16,7 +16,7 @@ public class ClientManager implements Runnable {
 
     private Socket socket;
     private BufferedReader msgIn;
-    private PrintWriter msgOut;
+    private BufferedWriter msgOut; //I had multiple issues trying with PrintWriter, BufferedWriter I found "easier" to use but causes IOExceptions (lotsa try-catch)
     /**
      * java has two types of streams: byteStream (data) and characterStream (characters). We obviously want the latter
      * to send messages.
@@ -30,7 +30,7 @@ public class ClientManager implements Runnable {
     public ClientManager(Socket socket) {
         try {
             this.socket = socket; //maybe add a try/catch
-            this.msgOut = new PrintWriter(new OutputStreamWriter(socket.getOutputStream())); //this stream to send from (on this socket)
+            this.msgOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); //this stream to send from (on this socket)
             this.msgIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); //this stream to read (on this socket)
             this.userName = msgIn.readLine(); //using the reader which will read from the client
             clients.add(this); //added to group chat
@@ -48,7 +48,7 @@ public class ClientManager implements Runnable {
          *              its task: receiving a message and all operations would come to a halt.
          *              This is called a blocking operation (another example in Server start() method*/
         try {
-            msgOut = new PrintWriter(socket.getOutputStream(), true);
+            msgOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             msgIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             while (!socket.isClosed()) {
@@ -60,16 +60,17 @@ public class ClientManager implements Runnable {
         }
     }
 
-    public PrintWriter getWriter() {
-        return msgOut;
-    }
-
     public void broadCastMsg(String message) {
         for (ClientManager client : clients) {
-            if (!client.userName.equals(userName)) {
-                String msgBroadcasted = message + "\n";
-                client.msgOut.write(msgBroadcasted);
-                client.msgOut.flush();
+            try {
+                if (!client.userName.equals(userName)) {
+                    String msgBroadcasted = message + "\n";
+                    client.msgOut.write(msgBroadcasted);
+                    client.msgOut.flush();
+                }
+            } catch (IOException e) {
+                System.err.println("Error at msgOut.write/flush @ broadcastMsg " + e.getMessage() + " printstack:");
+                e.printStackTrace();
             }
         }
     }
@@ -95,7 +96,7 @@ public class ClientManager implements Runnable {
             printWriter.close();
         }
 
-        if (!socket != null){
+        if (socket != null){
             try {
                 socket.close();
             }catch (IOException e){

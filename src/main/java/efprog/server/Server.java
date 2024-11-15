@@ -29,7 +29,7 @@ public class Server {
                 thread.start();
 
             }
-        } catch (IOException e) {
+        } catch (IOException e) { //TODO: it got messy, redo when finished
             System.err.println("serverSocket.accept error: " + e.getMessage());
             try {
                 if (serverSocket != null) {

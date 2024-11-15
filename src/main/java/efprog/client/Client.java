@@ -3,23 +3,47 @@ package efprog.client;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.function.Predicate;
+import java.util.Scanner;
 
 public class Client {
     private Socket socket;
     private BufferedReader msgIn;
-    private PrintWriter msgOut;
+    private BufferedWriter msgOut;
     private String userName;
 
-    public Client(Socket socket, String userName) {
-        this.socket = socket;
+    public Client(Socket socketIn, String userName) {
+        this.socket = socketIn;
         this.userName = userName;
         try {
-            this.msgIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.msgOut = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.msgIn = new BufferedReader(new InputStreamReader(socketIn.getInputStream()));
+            this.msgOut = new BufferedWriter(new OutputStreamWriter(socketIn.getOutputStream()));
         } catch (IOException e) {
             System.err.println("Error @ Client constructor for msgIn/Out " + e.getMessage() + " printstack:");
             e.printStackTrace();
         }
     }
+
+    public void sendMsgOut() {
+        try {
+            msgOut.write(userName);
+            msgOut.newLine();
+            msgOut.flush();
+
+        Scanner scanner = new Scanner(System.in);
+
+            while (!socket.isClosed()){
+                String msgToSend = scanner.nextLine();
+                msgOut.write(userName + ":> " + msgToSend);
+                msgOut.newLine();
+                msgOut.flush();
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error @ sendMsgOut(): msgOut.write/newLine/flsuh " + e.getMessage() + " printstack:");
+            e.printStackTrace();
+        }
+    }
+
+    public void l
+
 }
